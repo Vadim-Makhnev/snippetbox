@@ -15,6 +15,15 @@
 - 🔒 **Безопасность** - Хеширование паролей и защита от CSRF
 - 📱 **Адаптивный дизайн** - Работает на всех устройствах
 
+## Демо
+<img width="2494" height="1323" alt="Screenshot 2025-10-27 at 23-45-25 Home - Snippetbox" src="https://github.com/user-attachments/assets/198a5882-c4c1-4439-aac6-3b3f8ba75277" />
+<img width="2494" height="1323" alt="Screenshot 2025-10-27 at 23-45-36 Create a New Snippet - Snippetbox" src="https://github.com/user-attachments/assets/bbdbec6b-2d72-40d3-859e-b4ee6d83a80c" />
+<img width="2494" height="1323" alt="Screenshot 2025-10-27 at 23-45-47 Signup - Snippetbox" src="https://github.com/user-attachments/assets/7463b435-00d4-4e63-b73c-e10fc2da59e7" />
+<img width="2494" height="1323" alt="Screenshot 2025-10-27 at 23-45-53 Login - Snippetbox" src="https://github.com/user-attachments/assets/9bb98642-6b08-4f57-9b08-09235e06063b" />
+
+## Swagger
+<img width="2494" height="1002" alt="Screenshot 2025-10-27 at 23-44-53 Swagger UI" src="https://github.com/user-attachments/assets/8c2b420f-cd78-4d5a-b427-5e1e8ac4cb9d" />
+
 ## 🛠️ Технологический стек
 
 ### Backend
