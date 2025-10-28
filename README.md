@@ -42,6 +42,12 @@
 - Git
 
 ### Установка и настройка
+1. **Клонирование репозитория**
+```bash
+git clone https://github.com/Vadim-Makhnev/snippetbox.git
+cd snippetbox
+```
+2. **Настройка базы данных и запуск миграций**
 ```sql
 CREATE DATABASE snippetbox CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 CREATE USER 'web'@'localhost' IDENTIFIED BY 'pass';
@@ -50,11 +56,9 @@ GRANT ALL PRIVILEGES ON snippetbox.* TO 'web'@'localhost';
 ```bash
 migrate -path=./migrations -database="mysql://web:pass@tcp(localhost:3306)/snippetbox" up
 ```
+3. **Запуск приложения**
 ```go
 go run ./cmd/web
 ```
 
-1. **Клонирование репозитория**
-```bash
-git clone https://github.com/Vadim-Makhnev/snippetbox.git
-cd snippetbox
+
