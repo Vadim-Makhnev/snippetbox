@@ -26,6 +26,11 @@ type application struct {
 	sessionManager *scs.SessionManager
 }
 
+// @title       My API
+// @version     1.0
+// @description This is a sample API
+// @host        localhost:4000
+// @BasePath
 func main() {
 	addr := flag.String("addr", ":4000", "HTTP network address")
 	dsn := flag.String("dsn", "web:pass@/snippetbox?parseTime=true", "MySQL data source name")

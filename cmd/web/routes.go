@@ -3,13 +3,17 @@ package main
 import (
 	"net/http"
 
+	_ "github.com/Vadim-Makhnev/snippetbox/cmd/web/docs"
 	"github.com/Vadim-Makhnev/snippetbox/ui"
 	"github.com/justinas/alice"
+	httpSwagger "github.com/swaggo/http-swagger"
 )
 
 func (app *application) routes() http.Handler {
 	mux := http.NewServeMux()
 	mux.Handle("GET /static/", http.StripPrefix("/static", http.FileServerFS(ui.Files)))
+
+	mux.Handle("GET /swagger/", httpSwagger.WrapHandler)
 
 	mux.HandleFunc("GET /ping", ping)
 

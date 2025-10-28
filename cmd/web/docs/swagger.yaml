@@ -1,0 +1,244 @@
+host: localhost:4000
+info:
+  contact: {}
+  description: This is a sample API
+  title: My API
+  version: "1.0"
+paths:
+  /:
+    get:
+      description: Retrieve the latest snippets and render the home page
+      produces:
+      - text/html
+      responses:
+        "200":
+          description: HTML page
+          schema:
+            type: string
+      summary: Get home page with latest snippets
+      tags:
+      - pages
+  /snippet/create:
+    get:
+      description: Display the form for creating a new code snippet
+      produces:
+      - text/html
+      responses:
+        "200":
+          description: Snippet creation form
+          schema:
+            type: string
+      summary: Show snippet creation form
+      tags:
+      - snippets
+    post:
+      consumes:
+      - application/x-www-form-urlencoded
+      description: Create a new code snippet with validation
+      parameters:
+      - description: Snippet title
+        in: formData
+        maxLength: 100
+        minLength: 1
+        name: title
+        required: true
+        type: string
+      - description: Snippet content
+        in: formData
+        minLength: 1
+        name: content
+        required: true
+        type: string
+      - description: Expiration in days
+        enum:
+        - 1
+        - 7
+        - 365
+        in: formData
+        name: expires
+        required: true
+        type: integer
+      produces:
+      - text/html
+      responses:
+        "303":
+          description: Redirect to created snippet
+          schema:
+            type: string
+        "400":
+          description: Bad request - invalid form data
+          schema:
+            type: string
+        "422":
+          description: Unprocessable entity - validation failed
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Create new snippet
+      tags:
+      - snippets
+  /snippet/view/{id}:
+    get:
+      description: Retrieve snippet by snippet id
+      parameters:
+      - description: Snippet ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - text/html
+      responses:
+        "200":
+          description: HTML page
+          schema:
+            type: string
+        "404":
+          description: Snippet not found
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Get snippet by id
+      tags:
+      - snippets
+  /user/login:
+    get:
+      description: Display the form for user authentication
+      produces:
+      - text/html
+      responses:
+        "200":
+          description: User login form
+          schema:
+            type: string
+      summary: Show login form
+      tags:
+      - auth
+    post:
+      consumes:
+      - application/x-www-form-urlencoded
+      description: Verify user credentials and create session. On success, redirects
+        to snippet creation page.
+      parameters:
+      - description: User's email address
+        format: email
+        in: formData
+        name: email
+        required: true
+        type: string
+      - description: User's password
+        in: formData
+        name: password
+        required: true
+        type: string
+      produces:
+      - text/html
+      responses:
+        "303":
+          description: Redirect to /snippet/create with active session
+          schema:
+            type: string
+        "400":
+          description: Bad request - invalid form data
+          schema:
+            type: string
+        "401":
+          description: Unauthorized - invalid credentials
+          schema:
+            type: string
+        "422":
+          description: Unprocessable entity - validation failed
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Authenticate user
+      tags:
+      - auth
+  /user/logout:
+    post:
+      description: Terminate user session and redirect to home page with confirmation
+        message
+      produces:
+      - text/html
+      responses:
+        "303":
+          description: Redirect to home page with logout confirmation
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Logout user
+      tags:
+      - auth
+  /user/signup:
+    get:
+      description: Display the form for new user registration
+      produces:
+      - text/html
+      responses:
+        "200":
+          description: User registration form
+          schema:
+            type: string
+      summary: Show user registration form
+      tags:
+      - auth
+    post:
+      consumes:
+      - application/x-www-form-urlencoded
+      description: Create a new user account with email and password validation. Checks
+        for duplicate emails.
+      parameters:
+      - description: User's full name
+        in: formData
+        maxLength: 255
+        minLength: 1
+        name: name
+        required: true
+        type: string
+      - description: User's email address
+        format: email
+        in: formData
+        name: email
+        required: true
+        type: string
+      - description: User's password
+        in: formData
+        minLength: 8
+        name: password
+        required: true
+        type: string
+      produces:
+      - text/html
+      responses:
+        "303":
+          description: Redirect to login page with success message
+          schema:
+            type: string
+        "400":
+          description: Bad request - invalid form data
+          schema:
+            type: string
+        "422":
+          description: Unprocessable entity - validation failed or duplicate email
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Register new user
+      tags:
+      - auth
+swagger: "2.0"

@@ -30,6 +30,13 @@ type userLoginForm struct {
 	validator.Validator `form:"-"`
 }
 
+// Home godoc
+// @Summary      Get home page with latest snippets
+// @Description  Retrieve the latest snippets and render the home page
+// @Tags         pages
+// @Produce      html
+// @Success      200 {string} string "HTML page"
+// @Router       / [get]
 func (app *application) home(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Server", "Go")
 
@@ -45,6 +52,16 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 	app.render(w, r, http.StatusOK, "home.tmpl", data)
 }
 
+// snippetView godoc
+// @Summary      Get snippet by id
+// @Description  Retrieve snippet by snippet id
+// @Tags         snippets
+// @Produce      html
+// @Param        id path int true "Snippet ID"
+// @Success      200 {string} string "HTML page"
+// @Failure      404 {string} string "Snippet not found"
+// @Failure      500 {string} string "Internal server error"
+// @Router       /snippet/view/{id} [get]
 func (app *application) snippetView(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(r.PathValue("id"))
 	if err != nil || id < 1 {
@@ -68,6 +85,13 @@ func (app *application) snippetView(w http.ResponseWriter, r *http.Request) {
 	app.render(w, r, http.StatusOK, "view.tmpl", data)
 }
 
+// snippetCreate godoc
+// @Summary      Show snippet creation form
+// @Description  Display the form for creating a new code snippet
+// @Tags         snippets
+// @Produce      html
+// @Success      200 {string} string "Snippet creation form"
+// @Router       /snippet/create [get]
 func (app *application) snippetCreate(w http.ResponseWriter, r *http.Request) {
 	data := app.newTemplateData(r)
 
@@ -78,6 +102,20 @@ func (app *application) snippetCreate(w http.ResponseWriter, r *http.Request) {
 	app.render(w, r, http.StatusOK, "create.tmpl", data)
 }
 
+// snippetCreatePost godoc
+// @Summary      Create new snippet
+// @Description  Create a new code snippet with validation
+// @Tags         snippets
+// @Accept       x-www-form-urlencoded
+// @Produce      html
+// @Param        title formData string true "Snippet title" minlength(1) maxlength(100)
+// @Param        content formData string true "Snippet content" minlength(1)
+// @Param        expires formData int true "Expiration in days" Enums(1, 7, 365)
+// @Success      303 {string} string "Redirect to created snippet"
+// @Failure      400 {string} string "Bad request - invalid form data"
+// @Failure      422 {string} string "Unprocessable entity - validation failed"
+// @Failure      500 {string} string "Internal server error"
+// @Router       /snippet/create [post]
 func (app *application) snippetCreatePost(w http.ResponseWriter, r *http.Request) {
 	var form snippetCreateForm
 
@@ -110,12 +148,33 @@ func (app *application) snippetCreatePost(w http.ResponseWriter, r *http.Request
 	http.Redirect(w, r, fmt.Sprintf("/snippet/view/%d", id), http.StatusSeeOther)
 }
 
+// userSignup godoc
+// @Summary      Show user registration form
+// @Description  Display the form for new user registration
+// @Tags         auth
+// @Produce      html
+// @Success      200 {string} string "User registration form"
+// @Router       /user/signup [get]
 func (app *application) userSignup(w http.ResponseWriter, r *http.Request) {
 	data := app.newTemplateData(r)
 	data.Form = userSignupForm{}
 	app.render(w, r, http.StatusOK, "signup.tmpl", data)
 }
 
+// userSignupPost godoc
+// @Summary      Register new user
+// @Description  Create a new user account with email and password validation. Checks for duplicate emails.
+// @Tags         auth
+// @Accept       x-www-form-urlencoded
+// @Produce      html
+// @Param        name formData string true "User's full name" minlength(1) maxlength(255)
+// @Param        email formData string true "User's email address" format(email)
+// @Param        password formData string true "User's password" minlength(8)
+// @Success      303 {string} string "Redirect to login page with success message"
+// @Failure      400 {string} string "Bad request - invalid form data"
+// @Failure      422 {string} string "Unprocessable entity - validation failed or duplicate email"
+// @Failure      500 {string} string "Internal server error"
+// @Router       /user/signup [post]
 func (app *application) userSignupPost(w http.ResponseWriter, r *http.Request) {
 	var form userSignupForm
 
@@ -158,13 +217,35 @@ func (app *application) userSignupPost(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/user/login", http.StatusSeeOther)
 }
 
+// userLogin godoc
+// @Summary      Show login form
+// @Description  Display the form for user authentication
+// @Tags         auth
+// @Produce      html
+// @Success      200 {string} string "User login form"
+// @Router       /user/login [get]
 func (app *application) userLogin(w http.ResponseWriter, r *http.Request) {
 	data := app.newTemplateData(r)
 	data.Form = userLoginForm{}
 	app.render(w, r, http.StatusOK, "login.tmpl", data)
 }
 
+// userLoginPost godoc
+// @Summary      Authenticate user
+// @Description  Verify user credentials and create session. On success, redirects to snippet creation page.
+// @Tags         auth
+// @Accept       x-www-form-urlencoded
+// @Produce      html
+// @Param        email formData string true "User's email address" format(email)
+// @Param        password formData string true "User's password"
+// @Success      303 {string} string "Redirect to /snippet/create with active session"
+// @Failure      400 {string} string "Bad request - invalid form data"
+// @Failure      401 {string} string "Unauthorized - invalid credentials"
+// @Failure      422 {string} string "Unprocessable entity - validation failed"
+// @Failure      500 {string} string "Internal server error"
+// @Router       /user/login [post]
 func (app *application) userLoginPost(w http.ResponseWriter, r *http.Request) {
+
 	var form userLoginForm
 
 	err := app.decodePostForm(r, &form)
@@ -180,7 +261,7 @@ func (app *application) userLoginPost(w http.ResponseWriter, r *http.Request) {
 	if !form.Valid() {
 		data := app.newTemplateData(r)
 		data.Form = form
-		app.render(w, r, http.StatusUnprocessableEntity, "ligon.tmpl", data)
+		app.render(w, r, http.StatusUnprocessableEntity, "login.tmpl", data)
 		return
 	}
 
@@ -209,6 +290,14 @@ func (app *application) userLoginPost(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/snippet/create", http.StatusSeeOther)
 }
 
+// userLogoutPost godoc
+// @Summary      Logout user
+// @Description  Terminate user session and redirect to home page with confirmation message
+// @Tags         auth
+// @Produce      html
+// @Success      303 {string} string "Redirect to home page with logout confirmation"
+// @Failure      500 {string} string "Internal server error"
+// @Router       /user/logout [post]
 func (app *application) userLogoutPost(w http.ResponseWriter, r *http.Request) {
 	err := app.sessionManager.RenewToken(r.Context())
 	if err != nil {
